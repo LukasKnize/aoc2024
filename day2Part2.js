@@ -13,6 +13,7 @@ lines.forEach(line => data.push(line.split(' ').map(item => parseInt(item))))
 
 const possiblySafe = []
 const possiblyEditedSafe = []
+const isSafe = []
 
 data.forEach(dataLine => {
     const sorted = [...dataLine].sort(function (a, b) {
@@ -32,12 +33,13 @@ data.forEach(dataLine => {
         possiblySafe.push(dataLine)
     }else{
         for (let i = 0; i < dataLine.length; i++) {
-            const newDataLine = [...dataLine].splice(i, 1)
+            const newDataLine = [...dataLine]
+            newDataLine.splice(i, 1)
             const newSorted = [...newDataLine].sort(function (a, b) {
                 return a - b;
             });
             const newReversed = [...newSorted].reverse()
-            const newSameSorted = (newDataLine.length == sorted.length) && newDataLine.every(function(element, index) {
+            const newSameSorted = (newDataLine.length == newSorted.length) && newDataLine.every(function(element, index) {
                 return element === newSorted[index]; 
             });
 
@@ -46,14 +48,23 @@ data.forEach(dataLine => {
             });
 
             if (newSameSorted || newSameReversed) {
-                possiblyEditedSafe.push(newDataLine)
-                break
+let can = true
+    for (let i = 0; i < newDataLine.length -1; i++) {
+        if (Math.abs(newDataLine[i] - newDataLine[i+1]) > 0 && Math.abs(newDataLine[i] - newDataLine[i+1]) < 4) {
+            
+        }else{
+            can = false
+        }
+        
+    }
+    if (can) {
+        isSafe.push(newDataLine)
+break
+    }
             }
         }
     }
 })
-
-const isSafe = []
 
 possiblySafe.forEach(item => {
     let can = true
@@ -70,7 +81,8 @@ possiblySafe.forEach(item => {
     }else{
         for (let i = 0; i < item.length; i++) {
             let secondCan = true
-            const newDataLine = [...item].splice(i, 1)
+            const newDataLine = [...item]
+            newDataLine.splice(i, 1)
             for (let i = 0; i < newDataLine.length -1; i++) {
                 if (Math.abs(newDataLine[i] - newDataLine[i+1]) > 0 && Math.abs(newDataLine[i] - newDataLine[i+1]) < 4) {
                     
@@ -79,6 +91,10 @@ possiblySafe.forEach(item => {
                 }
                 
             }
+            if(secondCan){
+    isSafe.push(item)
+                break
+}
         }
     }
 })
@@ -98,5 +114,5 @@ possiblyEditedSafe.forEach(item => {
     }
 })
 
-console.log(isSafe)
+console.log(isSafe.length)
 
